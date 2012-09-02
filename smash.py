@@ -2,13 +2,23 @@ import hashlib
 import MySQLdb as database
 import sys
 
-# Returns the md5 hash of a string
+__version__ = '0.0.1'
+
+# These two functions are used to encode a string to an md5 or sha1 hash
+
 def md5(string):
     m = hashlib.md5()
     m.update(string)
     return m.hexdigest()
+     
+def sha1(string):
+    m = hashlib.md5()
+    m.update(string)
+    return m.hexdigest()
 
-# Temporary DB object. Will move to Redis in the morning
+# Temporary. 
+# Will move to Redis and tidy up when I get time
+#
 class DB(object):
     def __init__(self, user='root', pw='', db='smash'):
         self.user = user
@@ -18,22 +28,30 @@ class DB(object):
         self.cur = self.con.cursor()
 
     def create_db(self):
+        """ Create the database tables """
         with self.con:
           cur = self.con.cursor()
           cur.execute("CREATE TABLE IF NOT EXISTS \
-              data(Id INT PRIMARY KEY AUTO_INCREMENT, word VARCHAR(255), md5 VARCHAR(255))")
+              data(Id INT PRIMARY KEY AUTO_INCREMENT, \
+              word VARCHAR(255), md5 VARCHAR(255), sha1 VARCHAR(255))")
 
-    def insert(self, word, hash):
+    def insert(self, word, md5, sha1):
+        """ Insert an item into the database """
         with self.con:
           cur = self.con.cursor()
-          cur.execute("INSERT INTO data(word, md5) VALUES('%s', '%s')" % (word, hash))
+          cur.execute("INSERT INTO data(word, md5, sha1) VALUES('%s', '%s', '%s')" % (word, md5, sha1))
 
-    # Given an md5 hash, will return the unhashed version 
-    def find(self, hash):
+    def find_md5(self, hash):
         with self.con:
             cur = self.con.cursor()
             cur.execute("SELECT word from data WHERE md5='%s'" % (hash))
             print cur.fetchone()[0]
+ 
+    def find_sha1(self, hash):
+       with self.con:
+           cur = self.con.cursor()
+           cur.execute("SELECT word from data WHERE sha1='%s'" % (hash))
+           print cur.fetchone()[0]
       
 class HashStore(object):
     @staticmethod
@@ -41,7 +59,7 @@ class HashStore(object):
         with open(file_name, 'r') as f:
             for line in f:
                 w = line.strip()
-                db_obj.insert(w, md5(w))
+                db_obj.insert(w, md5(w), sha1(w))
                 
 def create_database():
     db = DB()
@@ -49,10 +67,9 @@ def create_database():
     HashStore.store_hashes(db,'/usr/share/dict/words')
 
 def main(h):
-    DB().find(h)
+    DB().find_md5(h)
 
 if __name__ == '__main__':
-    print len(sys.argv)
     if len(sys.argv) > 1:
         md5_hash = sys.argv[1]
         main(md5_hash)
