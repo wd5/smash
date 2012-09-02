@@ -58,8 +58,10 @@ class HashStore(object):
     def store_hashes(db_obj, file_name):
         with open(file_name, 'r') as f:
             for line in f:
-                w = line.strip()
-                db_obj.insert(w, md5(w), sha1(w))
+                # ignore words less than 4 letters
+                if len(line) > 3:
+                  w = line.strip()
+                  db_obj.insert(w, md5(w), sha1(w))
                 
 def create_database():
     db = DB()
