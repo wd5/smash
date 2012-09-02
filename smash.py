@@ -20,7 +20,8 @@ class DB(object):
     def create_db(self):
         with self.con:
           cur = self.con.cursor()
-          cur.execute("CREATE TABLE IF NOT EXISTS data(Id INT PRIMARY KEY AUTO_INCREMENT, word VARCHAR(255), md5 VARCHAR(255))")
+          cur.execute("CREATE TABLE IF NOT EXISTS \
+              data(Id INT PRIMARY KEY AUTO_INCREMENT, word VARCHAR(255), md5 VARCHAR(255))")
 
     def insert(self, word, hash):
         with self.con:
@@ -40,15 +41,21 @@ class HashStore(object):
         with open(file_name, 'r') as f:
             for line in f:
                 w = line.strip()
-                db.insert(w, md5(w))
+                db_obj.insert(w, md5(w))
+                
+def create_database():
+    db = DB()
+    db.create_db()
+    HashStore.store_hashes(db,'/usr/share/dict/words')
 
 def main(h):
-
-    db = DB()
-    #db.create_db()
-    #HashStore.store_hashes(db,'/usr/share/dict/words')
-    db.find(h)
+    DB().find(h)
 
 if __name__ == '__main__':
-    md5_hash = sys.argv[1]
-    main(md5_hash)
+    print len(sys.argv)
+    if len(sys.argv) > 1:
+        md5_hash = sys.argv[1]
+        main(md5_hash)
+    else:
+      print "Building database. This may take a while..."
+      create_database()
