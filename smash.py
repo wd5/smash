@@ -60,8 +60,8 @@ class HashStore(object):
             for line in f:
                 # ignore words less than 4 letters
                 if len(line) > 3:
-                  w = line.strip()
-                  db_obj.insert(w, md5(w), sha1(w))
+                    w = line.strip()
+                    db_obj.insert(w, md5(w), sha1(w))
                 
 def create_database():
     db = DB()
