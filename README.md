@@ -1,6 +1,8 @@
 # Smash
 
-Really quick and dirty script for reverse lookup MD5 hashes for dictionary words
+Really quick and dirty script for reverse lookup MD5 hashes for dictionary words. 
+
+Currently supports lookup of SHA1 and MD5 hash values
 
 ## Use
 
