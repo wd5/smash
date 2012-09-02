@@ -6,7 +6,7 @@ Really quick and dirty script for reverse lookup MD5 hashes for dictionary words
 
 We have an MD5 hash (5f4dcc3b5aa765d61d8327deb882cf99) and want to crack it.
 
-The first thing we need to do is create a database with a text file of common words. 
+The first thing we need to do is create a lookup table using a text file of common words. 
 
 On OSX we can use the built in dictionary found in /usr/share/dict/words
 
