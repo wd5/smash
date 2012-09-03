@@ -29,8 +29,7 @@ def interpose_numerics(word):
                 return v
             else:
                 return letter
-    return "".join(map(lambda w: swap_if(w), 
-                       [char for char in word.strip()]))
+    return "".join(map(lambda w: swap_if(w), [char for char in word.strip()]))
         
 def permutations(word):
     """ Returns common password permutations of a word 
@@ -91,15 +90,21 @@ class DB(object):
       
 class HashStore(object):
     @staticmethod
+    def store_words(db_obj, word, tollerance=3, *args):
+        """ Store permutations of a word in the database
+            along with the hash of that word """ 
+        # ignore words less than 4 letters
+        if len(word) > tollerance:
+            w = word.strip()
+            for perm in permutations(w):
+                db_obj.insert(perm, md5(perm), sha1(perm))
+
+    @staticmethod
     def store_hashes(db_obj, file_name):
         with open(file_name, 'r') as f:
             for line in f:
-                # ignore words less than 4 letters
-                if len(line) > 3:
-                    w = line.strip()
-                    for wrd in permutations(w):
-                        db_obj.insert(w, md5(w), sha1(w))
-                
+                  HashStore.store_words(db_obj, line)
+
 def create_database():
     db = DB()
     db.create_db()
