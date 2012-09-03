@@ -16,24 +16,60 @@ def sha1(string):
     m.update(string)
     return m.hexdigest()
 
-# Temporary. 
-# Will move to Redis and tidy up when I get time
+def interpose_numerics(word):
+    """ Swap out letters for numbers 
+        e.g password becomes pa55w0rd etc"""
+    letter_exchanges = {'e' : '3',
+                        'o' : '0',
+                        'l' : '1',
+                        's' : '5'}
+    def swap_if(letter):
+        for k, v in letter_exchanges.items():
+            if k == letter:
+                return v
+            else:
+                return letter
+    return "".join(map(lambda w: swap_if(w), 
+                       [char for char in word.strip()]))
+        
+def permutations(word):
+    """ Returns common password permutations of a word 
+        e.g ['password', 'password1', 'pa55word'] """
+    perms = []
+    perms.append(word)
+    perms.append(word + "1")
+    perms.append(word + "123")
+    perms.append(interpose_numerics(word))
+    return perms
+
+# TODO
+# 
+# Tidy up and move to Redis when I get time
 #
 class DB(object):
     def __init__(self, user='root', pw='', db='smash'):
         self.user = user
         self.pw = pw
         self.db = db
-        self.con = database.connect('localhost', self.user, self.pw, self.db)
+        self.con = self.try_connect()
         self.cur = self.con.cursor()
 
+    def try_connect(self):
+        try:
+            return database.connect('localhost', self.user, self.pw, self.db)
+        except database.OperationalError, e:
+            exit(e)
+      
     def create_db(self):
         """ Create the database tables """
-        with self.con:
-          cur = self.con.cursor()
-          cur.execute("CREATE TABLE IF NOT EXISTS \
-              data(Id INT PRIMARY KEY AUTO_INCREMENT, \
-              word VARCHAR(255), md5 VARCHAR(255), sha1 VARCHAR(255))")
+        try:
+            with self.con:
+              cur = self.con.cursor()
+              cur.execute("CREATE TABLE IF NOT EXISTS \
+                  data(Id INT PRIMARY KEY AUTO_INCREMENT, \
+                  word VARCHAR(255), md5 VARCHAR(255), sha1 VARCHAR(255))")
+        except Exception, e:
+            print e
 
     def insert(self, word, md5, sha1):
         """ Insert an item into the database """
@@ -61,7 +97,8 @@ class HashStore(object):
                 # ignore words less than 4 letters
                 if len(line) > 3:
                     w = line.strip()
-                    db_obj.insert(w, md5(w), sha1(w))
+                    for wrd in permutations(w):
+                        db_obj.insert(w, md5(w), sha1(w))
                 
 def create_database():
     db = DB()
