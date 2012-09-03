@@ -1,3 +1,16 @@
+# ============================================
+#
+# A script for cracking easy md5 and sha1 passwords
+# Uses brute force lookups on common phrases 
+# and word mutations. i.e pa55w0rd, op3n etc
+#
+# Currently supports only single word lookups but can easily be
+# adapted to support a larger corpus of words
+#
+# Seeding the database takes a very long time. 
+#
+# ============================================
+
 import hashlib
 import MySQLdb as database
 import sys
