@@ -14,9 +14,28 @@
 import hashlib
 import MySQLdb as database
 import sys
+import redis
 
 __version__ = '0.0.1'
 
+class RedisStore(object):
+    """ A Redis store """
+    @staticmethod
+    def add(con, word, hash):
+        con.set(word, md5_hash)
+    @staticmethod
+    def get(con, word):
+        return con.get(word)
+    @staticmethod
+    def create(con, file_name, tollerance=3):
+        """ Stores each word along with the md5 hash of that word"""
+        with open(file_name, 'r') as f:
+            for word in f:
+                if len(word) > tollerance:
+                    w = word.strip()
+                    for perm in permutations(w):
+                        con.set(perm, md5(perm))
+        
 # These two functions are used to encode a string to an md5 or sha1 hash
 
 def md5(string):
@@ -54,11 +73,10 @@ def permutations(word):
     perms.append(interpose_numerics(word))
     return perms
 
-# TODO
-# 
-# Tidy up and move to Redis when I get time
-#
 class DB(object):
+    
+    """ An alternative MySQL store """
+    
     def __init__(self, user='root', pw='', db='smash'):
         self.user = user
         self.pw = pw
@@ -117,7 +135,7 @@ class HashStore(object):
         with open(file_name, 'r') as f:
             for line in f:
                   HashStore.store_words(db_obj, line)
-
+                 
 def create_database():
     db = DB()
     db.create_db()
@@ -127,9 +145,12 @@ def main(h):
     DB().find_md5(h)
 
 if __name__ == '__main__':
+    
+    r = redis.StrictRedis(host='localhost', port=6379, db=0)
+    
     if len(sys.argv) > 1:
-        md5_hash = sys.argv[1]
-        main(md5_hash)
+        h = sys.argv[1]
+        print RedisStore.get(r, "%s" % h)
     else:
-      print "Building database. This may take a while..."
-      create_database()
+      print "Building Redis store. This may take a while..."
+      RedisStore.create(r, '/usr/share/dict/words')
