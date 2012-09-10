@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+
+<head>
+  <title>Smash! | Hash password cracker</title>
+  <link rel=stylesheet type=text/css href="{{ url_for('static', filename='bootstrap.css') }}">
+  <link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+  <body>
+    <div class="navbar navbar-inverse navbar-fixed-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="brand" href="/">Smash</a>
+        <div class="nav-collapse collapse">
+          <ul class="nav">
+          </ul>
+        </div>
+      </div>
+    </div>
+    </div>
+    <div id='main' class='container'>
+      <h1>Smash!</h1>
+      <p>Smash lets you easily break hashed passwords. Enter a hash below</p>
+      <p>Visit <code>/sha1/query</code> to see the result of a query</p>
+ 
+      <h2>{{ result }}</h2>
+      
+    </div>
+  </body>
+</html>
