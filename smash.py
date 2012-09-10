@@ -61,6 +61,7 @@ def interpose_numerics(word):
                 return v
             else:
                 return letter
+                
     return "".join(map(lambda w: swap_if(w), [char for char in word.strip()]))
         
 def permutations(word):
