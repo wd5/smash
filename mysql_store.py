@@ -1,3 +1,11 @@
+# -*- coding: utf-8 -*-
+
+# ==============================
+#
+# An adpater for MySQL
+#
+# ==============================
+
 class DB(object):
     
     """ An alternative MySQL store """

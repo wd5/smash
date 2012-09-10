@@ -1,5 +1,11 @@
 # -*- coding: utf-8 -*-
 
+# ==============================
+#
+# Web application
+#
+# ==============================
+
 from __future__ import with_statement
 import os
 from flask import Flask, render_template, redirect, request

@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 # ============================================
 #
 # A script for cracking easy md5 and sha1 passwords
