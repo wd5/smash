@@ -6,6 +6,8 @@
 #
 # ==============================
 
+import MySQLdb as database
+
 class DB(object):
     
     """ An alternative MySQL store """
