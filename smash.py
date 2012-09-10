@@ -35,7 +35,7 @@ class RedisStore(object):
                 if len(word) > tollerance:
                     w = word.strip()
                     for perm in permutations(w):
-                        con.set(md5(perm), perm)
+                        con.set(sha1(perm), perm)
         
 # These two functions are used to encode a string to an md5 or sha1 hash
 

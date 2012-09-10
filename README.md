@@ -2,7 +2,9 @@
 
 Really quick and dirty script for reverse lookup MD5 hashes for dictionary words. 
 
-Currently supports lookup of SHA1 and MD5 hash values
+Currently supports lookup of SHA1 and MD5 hash values.
+
+Requires Redis and Flask
 
 ## Use
 
@@ -26,4 +28,5 @@ Returns 'password'
 
 # TODO 
 
-Reverse lookup and move to Redis
+Move to Redis (done)
+Web app (partially done)
